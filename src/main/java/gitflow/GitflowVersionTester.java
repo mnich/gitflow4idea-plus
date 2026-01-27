@@ -8,6 +8,7 @@ import com.intellij.openapi.util.Disposer;
 import org.jetbrains.annotations.NotNull;
 
 //import javax.annotation.Nullable;
+import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -54,13 +55,22 @@ public class GitflowVersionTester {
 
 	/**
 	 * Returns true if the {@code git flow} version can be determined
-	 * and is any AVH version ({@code #contains("AVH")}) and
-	 * not the unmaintained NVIE version.
+	 * and is a supported implementation: AVH Edition, git-flow-next,
+	 * or gitflow-cjs. The unmaintained NVIE original version is not supported.
 	 *
-	 * @return true if we think the git flow version is an AVH version.
+	 * @return true if the installed git flow CLI is a supported version.
 	 */
 	public boolean isSupportedVersion() {
-		return version != null && version.contains("AVH");
+		if (version == null) {
+			return false;
+		}
+
+		String normalized = version.toLowerCase(Locale.ROOT);
+		// Support: AVH Edition, git-flow-next, gitflow-cjs
+		return normalized.contains("avh")
+			|| normalized.contains("git-flow-next")
+			|| normalized.contains("git flow next")
+			|| normalized.contains("cjs");
 	}
 
 	public void init(){
