@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Locale;
 
 
 public class GitInitLineHandler extends GitLineHandler {
@@ -50,7 +51,7 @@ public class GitInitLineHandler extends GitLineHandler {
 
     public void onTextAvailable(String s) {
         try {
-            if (s.contains("name for production releases")) {
+            if (containsAnyIgnoreCase(s, "name for production releases", "trunk branch")) {
                 consoleWriter.showCommandLine(_initOptions.getProductionBranch());
 
                 writer.write(_initOptions.getProductionBranch());
@@ -58,7 +59,7 @@ public class GitInitLineHandler extends GitLineHandler {
                 writer.flush();
             }
 
-            if (s.contains("name for \"next release\"")) {
+            if (containsAnyIgnoreCase(s, "name for \"next release\"", "name for development")) {
                 consoleWriter.showCommandLine(_initOptions.getDevelopmentBranch());
 
                 writer.write(_initOptions.getDevelopmentBranch());
@@ -66,42 +67,42 @@ public class GitInitLineHandler extends GitLineHandler {
                 writer.flush();
             }
 
-            if (s.contains("Feature branches")) {
+            if (containsAnyIgnoreCase(s, "feature branches", "feature branch prefix", "feature prefix")) {
                 consoleWriter.showCommandLine(_initOptions.getFeaturePrefix());
 
                 writer.write(_initOptions.getFeaturePrefix());
                 writer.write("\n");
                 writer.flush();
             }
-            if (s.contains("Bugfix branches")) {
+            if (containsAnyIgnoreCase(s, "bugfix branches", "bugfix branch prefix", "bugfix prefix")) {
                 consoleWriter.showCommandLine(_initOptions.getBugfixPrefix());
 
                 writer.write(_initOptions.getBugfixPrefix());
                 writer.write("\n");
                 writer.flush();
             }
-            if (s.contains("Release branches")) {
+            if (containsAnyIgnoreCase(s, "release branches", "release branch prefix", "release prefix")) {
                 consoleWriter.showCommandLine(_initOptions.getReleasePrefix());
 
                 writer.write(_initOptions.getReleasePrefix());
                 writer.write("\n");
                 writer.flush();
             }
-            if (s.contains("Hotfix branches")) {
+            if (containsAnyIgnoreCase(s, "hotfix branches", "hotfix branch prefix", "hotfix prefix")) {
                 consoleWriter.showCommandLine(_initOptions.getHotfixPrefix());
 
                 writer.write(_initOptions.getHotfixPrefix());
                 writer.write("\n");
                 writer.flush();
             }
-            if (s.contains("Support branches")) {
+            if (containsAnyIgnoreCase(s, "support branches", "support branch prefix", "support prefix")) {
                 consoleWriter.showCommandLine(_initOptions.getSupportPrefix());
 
                 writer.write(_initOptions.getSupportPrefix());
                 writer.write("\n");
                 writer.flush();
             }
-            if (s.contains("Version tag")) {
+            if (containsAnyIgnoreCase(s, "version tag", "tag prefix")) {
                 consoleWriter.showCommandLine(_initOptions.getVersionPrefix());
 
                 writer.write(_initOptions.getVersionPrefix());
@@ -117,6 +118,19 @@ public class GitInitLineHandler extends GitLineHandler {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private static boolean containsAnyIgnoreCase(String source, String... needles) {
+        if (source == null) {
+            return false;
+        }
+        final String lowerSource = source.toLowerCase(Locale.ROOT);
+        for (String needle : needles) {
+            if (needle != null && lowerSource.contains(needle.toLowerCase(Locale.ROOT))) {
+                return true;
+            }
+        }
+        return false;
     }
 
     @Nullable

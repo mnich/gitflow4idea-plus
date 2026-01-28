@@ -24,6 +24,7 @@ import java.util.Map;
 
 public class GitflowConfigUtil {
 
+    // Old git-flow AVH config keys
     public static final String BRANCH_MASTER = "gitflow.branch.master";
     public static final String BRANCH_DEVELOP = "gitflow.branch.develop";
     public static final String PREFIX_FEATURE = "gitflow.prefix.feature";
@@ -32,6 +33,13 @@ public class GitflowConfigUtil {
     public static final String PREFIX_BUGFIX = "gitflow.prefix.bugfix";
     public static final String PREFIX_SUPPORT = "gitflow.prefix.support";
     public static final String PREFIX_VERSIONTAG = "gitflow.prefix.versiontag";
+
+    // New git-flow-next config keys
+    public static final String BRANCH_FEATURE_PREFIX = "gitflow.branch.feature.prefix";
+    public static final String BRANCH_RELEASE_PREFIX = "gitflow.branch.release.prefix";
+    public static final String BRANCH_HOTFIX_PREFIX = "gitflow.branch.hotfix.prefix";
+    public static final String BRANCH_BUGFIX_PREFIX = "gitflow.branch.bugfix.prefix";
+    public static final String BRANCH_SUPPORT_PREFIX = "gitflow.branch.support.prefix";
 
     private static  Map<Project, Map<String, GitflowConfigUtil>> gitflowConfigUtilMap = new HashMap<Project, Map<String, GitflowConfigUtil>>();
 
@@ -73,19 +81,99 @@ public class GitflowConfigUtil {
         update();
     }
 
+    /**
+     * Detects git-flow-next branch names by scanning all local branches.
+     * Looks for branches with type=base in git config.
+     * Uses the parent field to distinguish: production (no parent) vs develop (has parent).
+     */
+    private void detectGitflowNextBranches() {
+        VirtualFile root = repo.getRoot();
+
+        try {
+            String developCandidate = null;
+            String productionCandidate = null;
+
+            // Get all local branches and check their git config
+            java.util.Collection<git4idea.GitLocalBranch> localBranches = repo.getBranches().getLocalBranches();
+
+            for (git4idea.GitLocalBranch branch : localBranches) {
+                String branchName = branch.getName();
+                String type = GitConfigUtil.getValue(project, root, "gitflow.branch." + branchName + ".type");
+
+                if ("base".equals(type)) {
+                    String parent = GitConfigUtil.getValue(project, root, "gitflow.branch." + branchName + ".parent");
+
+                    if (parent == null || parent.isEmpty()) {
+                        // This is production branch (no parent)
+                        productionCandidate = branchName;
+                    } else {
+                        // This is develop branch (has parent)
+                        developCandidate = branchName;
+                        // Also get production from parent if not found yet
+                        if (productionCandidate == null) {
+                            productionCandidate = parent;
+                        }
+                    }
+                }
+
+                // If we found both, we can stop
+                if (productionCandidate != null && developCandidate != null) {
+                    break;
+                }
+            }
+
+            // Set the values
+            masterBranch = productionCandidate;
+            developBranch = developCandidate;
+
+        } catch (Exception e) {
+            // On error, mark as not initialized
+            masterBranch = null;
+            developBranch = null;
+        }
+    }
+
     public void update(){
         VirtualFile root = repo.getRoot();
 
         try{
             Future<?> f = ApplicationManager.getApplication().executeOnPooledThread(() -> {
                 try {
-                    masterBranch = GitConfigUtil.getValue(project, root, BRANCH_MASTER);
-                    developBranch = GitConfigUtil.getValue(project, root, BRANCH_DEVELOP);
+                    // Try to detect git-flow-next branches first
+                    detectGitflowNextBranches();
+
+                    // If detection didn't find branches, try old AVH format
+                    if (masterBranch == null || developBranch == null) {
+                        masterBranch = GitConfigUtil.getValue(project, root, BRANCH_MASTER);
+                        developBranch = GitConfigUtil.getValue(project, root, BRANCH_DEVELOP);
+                    }
+
+                    // Prefixes: try old format first, then new format
                     featurePrefix = GitConfigUtil.getValue(project, root, PREFIX_FEATURE);
+                    if (featurePrefix == null) {
+                        featurePrefix = GitConfigUtil.getValue(project, root, BRANCH_FEATURE_PREFIX);
+                    }
+
                     releasePrefix = GitConfigUtil.getValue(project, root, PREFIX_RELEASE);
+                    if (releasePrefix == null) {
+                        releasePrefix = GitConfigUtil.getValue(project, root, BRANCH_RELEASE_PREFIX);
+                    }
+
                     hotfixPrefix = GitConfigUtil.getValue(project, root, PREFIX_HOTFIX);
+                    if (hotfixPrefix == null) {
+                        hotfixPrefix = GitConfigUtil.getValue(project, root, BRANCH_HOTFIX_PREFIX);
+                    }
+
                     bugfixPrefix = GitConfigUtil.getValue(project, root, PREFIX_BUGFIX);
+                    if (bugfixPrefix == null) {
+                        bugfixPrefix = GitConfigUtil.getValue(project, root, BRANCH_BUGFIX_PREFIX);
+                    }
+
                     supportPrefix = GitConfigUtil.getValue(project, root, PREFIX_SUPPORT);
+                    if (supportPrefix == null) {
+                        supportPrefix = GitConfigUtil.getValue(project, root, BRANCH_SUPPORT_PREFIX);
+                    }
+
                     versiontagPrefix = GitConfigUtil.getValue(project, root, PREFIX_VERSIONTAG);
                 } catch (VcsException e) {
                     NotifyUtil.notifyError(project, "Config error", e);

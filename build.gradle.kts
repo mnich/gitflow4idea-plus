@@ -9,7 +9,7 @@ repositories {
 }
 
 group = "gitflow4idea-plus"
-version = "0.8.1-beta.1"
+version = "0.8.1-beta.2"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -36,11 +36,14 @@ tasks {
         version.set("${project.version}")
         sinceBuild.set("231.8109.175")
         changeNotes.set("""
-            <H2>Changelog for 0.8.1-beta.1</H2>
+            <H2>Changelog for 0.8.1-beta.2</H2>
             <ul>
               <li>Support git-flow-next implementation #45</li>
               <li>Support gitflow-cjs implementation #34</li>
               <li>Fix "Could not determine git flow version" for Windows users (Git 2.51.1+) #44</li>
+              <li>Add git-flow-next config compatibility layer (from PR #46)</li>
+              <li>Smart branch detection for init dialog (prioritize main over master)</li>
+              <li>Improve init prompt matching for different git-flow implementations</li>
               <li>Improve unsupported version error message with installation guidance</li>
             </ul>
 
