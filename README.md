@@ -7,7 +7,11 @@ An intelliJ plugin providing a UI layer for git-flow, which in itself is a colle
 
 ![screenshot](https://github.com/RubinCarter/gitflow4idea-fix/blob/develop/docs/img/gitflow.png)
 
- 
+## Companion CLI (experimental)
+
+Prefer the terminal? Check out [gitflow-cli-plus](https://github.com/RubinCarter/gitflow-cli-plus) — a command-line companion to this plugin, derived from a functional analysis of its semantics. It implements the same git-flow operations (init / feature / release / hotfix / bugfix) as a single static Go binary, follows the AVH edition semantics and config layout, and recognizes repos initialized by git-flow-next through a read-only compatibility layer.
+
+**Note: this CLI project is currently experimental** — expect rough edges, and please report anything you find in its [issue tracker](https://github.com/RubinCarter/gitflow-cli-plus/issues).
 
 ## Getting started
 
