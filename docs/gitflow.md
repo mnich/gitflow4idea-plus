@@ -37,18 +37,20 @@ Wymusza ponowną konfigurację, nawet jeśli repo jest już zainicjalizowane pod
 
 ## 2. Feature (`feature/*` → merge do `develop`)
 
+Nazwa brancha = numer taska, np. `FW-17422`.
+
 **Start** — tworzy branch feature z `develop`:
 
 ```bash
-git flow feature start moja-funkcja
-git flow feature start moja-funkcja -F        # -F = najpierw fetch z origin
-git flow feature start moja-funkcja release/2.0   # start z innej bazy niż develop
+git flow feature start FW-17422
+git flow feature start FW-17422 -F        # -F = najpierw fetch z origin
+git flow feature start FW-17422 release/2.0   # start z innej bazy niż develop
 ```
 
 **Finish** — merguje feature do `develop` i usuwa branch:
 
 ```bash
-git flow feature finish moja-funkcja
+git flow feature finish FW-17422
 ```
 
 | Flaga | Znaczenie |
@@ -66,31 +68,31 @@ git flow feature finish moja-funkcja
 Przykłady:
 
 ```bash
-git flow feature finish moja-funkcja -S              # squash merge
-git flow feature finish moja-funkcja -S --push       # squash + push develop na origin
-git flow feature finish moja-funkcja --no-ff -k      # zwykły merge commit, zachowaj branch
+git flow feature finish FW-17422 -S              # squash merge
+git flow feature finish FW-17422 -S --push       # squash + push develop na origin
+git flow feature finish FW-17422 --no-ff -k      # zwykły merge commit, zachowaj branch
 ```
 
 **Publish / Track / Pull** (współdzielenie brancha z zespołem):
 
 ```bash
-git flow feature publish moja-funkcja        # wypchnij branch feature na origin
-git flow feature track moja-funkcja          # ściągnij i zacznij śledzić cudzy feature
-git flow feature pull origin moja-funkcja    # pobierz zmiany do śledzonego feature
+git flow feature publish FW-17422        # wypchnij branch feature na origin
+git flow feature track FW-17399          # ściągnij i zacznij śledzić task kolegi z zespołu
+git flow feature pull origin FW-17399    # pobierz zmiany do śledzonego feature
 ```
 
 ---
 
 ## 3. Bugfix (`bugfix/*` → merge do `develop`)
 
-Identyczna logika jak feature, tylko `bugfix` zamiast `feature`:
+Identyczna logika jak feature, tylko `bugfix` zamiast `feature` — nazwa brancha to też numer taska, np. `FW-17588`:
 
 ```bash
-git flow bugfix start naprawa-logowania
-git flow bugfix finish naprawa-logowania -S           # squash merge
-git flow bugfix finish naprawa-logowania --no-ff --push
-git flow bugfix publish naprawa-logowania
-git flow bugfix track naprawa-logowania
+git flow bugfix start FW-17588
+git flow bugfix finish FW-17588 -S           # squash merge
+git flow bugfix finish FW-17588 --no-ff --push
+git flow bugfix publish FW-17588
+git flow bugfix track FW-17588
 ```
 
 Flagi finish: `-F`, `-r/--rebase`, `--push`, `-k/--keep`, `--keeplocal`, `--keepremote`, `-D/--force_delete`, `--no-ff`, `-S/--squash` (dokładnie te same co feature).
@@ -98,6 +100,8 @@ Flagi finish: `-F`, `-r/--rebase`, `--push`, `-k/--keep`, `--keeplocal`, `--keep
 ---
 
 ## 4. Release (`release/*` → merge do `main` **i** `develop` + tag)
+
+Nazwa brancha to numer wersji (nie numer taska) — tag trafia do repo pod tą samą nazwą.
 
 **Start:**
 
@@ -168,6 +172,7 @@ git flow hotfix publish 1.4.1
 
 ## Uwagi praktyczne
 
+- **Nazewnictwo branchy**: feature/bugfix nazywamy numerem taska, np. `FW-17422` — bez dodatkowego opisu w nazwie brancha. Release/hotfix nazywamy numerem wersji (np. `1.4.0`).
 - **`develop`, `main`** muszą już istnieć lokalnie zanim zrobisz `finish` (git-flow sam nie tworzy `main`, jeśli nigdy go nie było).
 - `-S/--squash` **nie usuwa** potrzeby ręcznego pilnowania konfliktów — squash i tak może wymagać rozwiązania konfliktów przy mergu, tylko finalny commit na `develop` będzie jeden zamiast całej historii brancha.
 - Jeśli robisz `--squash` i chcesz zachować info o źródłowym branchu w wiadomości commita, dodaj `--squash-info` (feature/release/hotfix).
