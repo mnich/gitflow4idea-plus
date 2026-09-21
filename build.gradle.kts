@@ -9,7 +9,7 @@ repositories {
 }
 
 group = "gitflow4idea-plus"
-version = "0.8.1-beta.4"
+version = "0.8.1-beta.5"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -36,6 +36,12 @@ tasks {
         version.set("${project.version}")
         sinceBuild.set("231.8109.175")
         changeNotes.set("""
+            <H2>Changelog for 0.8.1-beta.5</H2>
+            <ul>
+              <li>Fix false-positive "merge conflict" detection (and the resulting IDE freeze/infinite retry) when a squash finish fails for a non-conflict reason</li>
+              <li>Force English git output for all Gitflow commands (LC_ALL=C) so error/conflict detection works correctly on non-English system locales</li>
+            </ul>
+
             <H2>Changelog for 0.8.1-beta.4</H2>
             <ul>
               <li>Fix "Requires plugin com.intellij.tasks" preventing install/load on newer IDEA versions (Task Management dependency is now optional)</li>

@@ -19,6 +19,15 @@ import java.util.HashMap;
 
 public class GitflowImpl extends GitImpl implements Gitflow {
 
+    //the plugin parses git-flow/git output for known English substrings (e.g. "There were
+    //merge conflicts", "CONFLICT (") to detect errors; force a C locale so that parsing
+    //stays reliable regardless of the user's OS/system language
+    @Override
+    public GitCommandResult runCommand(GitLineHandler h) {
+        h.addCustomEnvironmentVariable("LC_ALL", "C");
+        return super.runCommand(h);
+    }
+
     //we must use reflection to add this command, since the git4idea implementation doesn't expose it
     private GitCommand GitflowCommand() {
         Method m = null;
@@ -57,7 +66,7 @@ public class GitflowImpl extends GitImpl implements Gitflow {
     private void disableEditorIfSquashing(GitLineHandler h, Project project, String optionId){
         HashMap<String,String> optionMap = GitflowOptionsFactory.getOptionById(optionId);
         if (GitflowConfigurable.isOptionActive(project, optionMap.get("id"))){
-            h.addCustomEnvironmentVariable("GIT_EDITOR", "true");
+            h.addCustomEnvironmentVariable("GIT_EDITOR", ":");
         }
     }
 
