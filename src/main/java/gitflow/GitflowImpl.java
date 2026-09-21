@@ -139,7 +139,7 @@ public class GitflowImpl extends GitImpl implements Gitflow {
         addOptionsCommand(h, repository.getProject(),"FEATURE_fetchFromOrigin");
         addOptionsCommand(h, repository.getProject(),"FEATURE_pushOnFinish");
         addOptionsCommand(h, repository.getProject(),"FEATURE_noFastForward");
-//        addOptionsCommand(h, repository.getProject(),"FEATURE_squash");
+        addOptionsCommand(h, repository.getProject(),"FEATURE_squash");
 
         h.addParameters(featureName);
 
@@ -426,7 +426,7 @@ public class GitflowImpl extends GitImpl implements Gitflow {
         addOptionsCommand(h, repository.getProject(),"BUGFIX_keepLocal");
         addOptionsCommand(h, repository.getProject(),"BUGFIX_keepBranch");
         addOptionsCommand(h, repository.getProject(),"BUGFIX_fetchFromOrigin");
-//        addOptionsCommand(h, repository.getProject(),"BUGFIX_squash");
+        addOptionsCommand(h, repository.getProject(),"BUGFIX_squash");
 
         h.addParameters(bugfixName);
 
