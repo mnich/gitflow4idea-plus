@@ -9,7 +9,7 @@ repositories {
 }
 
 group = "gitflow4idea-plus"
-version = "0.8.1-beta.3"
+version = "0.8.1-beta.4"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -36,6 +36,12 @@ tasks {
         version.set("${project.version}")
         sinceBuild.set("231.8109.175")
         changeNotes.set("""
+            <H2>Changelog for 0.8.1-beta.4</H2>
+            <ul>
+              <li>Fix "Requires plugin com.intellij.tasks" preventing install/load on newer IDEA versions (Task Management dependency is now optional)</li>
+              <li>Fix IDE freezing when finishing a feature/bugfix with "Squash during merge" enabled (git-flow's internal commit no longer waits on an interactive editor)</li>
+            </ul>
+
             <H2>Changelog for 0.8.1-beta.3</H2>
             <ul>
               <li>Support git-flow-next implementation #45</li>
