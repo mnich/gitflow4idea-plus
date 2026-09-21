@@ -44,7 +44,7 @@ Nazwa brancha = numer taska, np. `FW-17422`.
 ```bash
 git flow feature start FW-17422
 git flow feature start FW-17422 -F        # -F = najpierw fetch z origin
-git flow feature start FW-17422 release/2.0   # start z innej bazy niż develop
+git flow feature start FW-17422 release/2026-09-21   # start z innej bazy niż develop
 ```
 
 **Finish** — merguje feature do `develop` i usuwa branch:
@@ -101,19 +101,19 @@ Flagi finish: `-F`, `-r/--rebase`, `--push`, `-k/--keep`, `--keeplocal`, `--keep
 
 ## 4. Release (`release/*` → merge do `main` **i** `develop` + tag)
 
-Nazwa brancha to numer wersji (nie numer taska) — tag trafia do repo pod tą samą nazwą.
+Nazwa brancha to data w formacie `RRRR-MM-DD`, np. `2026-09-21`. Jeśli tego samego dnia wychodzi kolejne wydanie, dopisujemy numer porządkowy: `2026-09-21-2`, `2026-09-21-3` itd.
 
 **Start:**
 
 ```bash
-git flow release start 1.4.0
-git flow release start 1.4.0 -F
+git flow release start 2026-09-21
+git flow release start 2026-09-21-2 -F   # drugie wydanie tego samego dnia
 ```
 
 **Finish** — merguje do `main` i `develop`, taguje:
 
 ```bash
-git flow release finish 1.4.0
+git flow release finish 2026-09-21
 ```
 
 | Flaga | Znaczenie |
@@ -133,46 +133,48 @@ git flow release finish 1.4.0
 Przykłady:
 
 ```bash
-git flow release finish 1.4.0 -m "Release 1.4.0" -p     # tag z wiadomością + push
-git flow release finish 1.4.0 -n                         # bez tagowania
+git flow release finish 2026-09-21 -m "Release 2026-09-21" -p     # tag z wiadomością + push
+git flow release finish 2026-09-21 -n                               # bez tagowania
 ```
 
 **Publish / Track:**
 
 ```bash
-git flow release publish 1.4.0
-git flow release track 1.4.0
+git flow release publish 2026-09-21
+git flow release track 2026-09-21
 ```
 
 ---
 
 ## 5. Hotfix (`hotfix/*` → merge do `main` **i** `develop` + tag)
 
+Hotfix robimy do konkretnego taska, więc nazwa brancha to numer taska, np. `FW-17650`.
+
 **Start** (domyślnie z `main`):
 
 ```bash
-git flow hotfix start 1.4.1
-git flow hotfix start 1.4.1 main    # jawnie wskazana baza
+git flow hotfix start FW-17650
+git flow hotfix start FW-17650 main    # jawnie wskazana baza
 ```
 
 **Finish:**
 
 ```bash
-git flow hotfix finish 1.4.1 -m "Hotfix 1.4.1"
+git flow hotfix finish FW-17650 -m "Hotfix FW-17650"
 ```
 
 Flagi identyczne jak w release: `-F`, `-m/-f` (wiadomość tagu), `-s/-u` (podpis), `-p/--push`, `-k/--keep(remote|local)`, `-n` (bez tagu), `-b/--nobackmerge`, `-S/--squash`, `-T/--tagname`.
 
 ```bash
-git flow hotfix finish 1.4.1 -n -p     # bez tagu, z pushem
-git flow hotfix publish 1.4.1
+git flow hotfix finish FW-17650 -n -p     # bez tagu, z pushem
+git flow hotfix publish FW-17650
 ```
 
 ---
 
 ## Uwagi praktyczne
 
-- **Nazewnictwo branchy**: feature/bugfix nazywamy numerem taska, np. `FW-17422` — bez dodatkowego opisu w nazwie brancha. Release/hotfix nazywamy numerem wersji (np. `1.4.0`).
+- **Nazewnictwo branchy**: feature/bugfix/hotfix nazywamy numerem taska, np. `FW-17422` — bez dodatkowego opisu w nazwie brancha. Release nazywamy datą `RRRR-MM-DD` (np. `2026-09-21`), a przy kilku wydaniach tego samego dnia dopisujemy numer porządkowy (`2026-09-21-2`).
 - **`develop`, `main`** muszą już istnieć lokalnie zanim zrobisz `finish` (git-flow sam nie tworzy `main`, jeśli nigdy go nie było).
 - `-S/--squash` **nie usuwa** potrzeby ręcznego pilnowania konfliktów — squash i tak może wymagać rozwiązania konfliktów przy mergu, tylko finalny commit na `develop` będzie jeden zamiast całej historii brancha.
 - Jeśli robisz `--squash` i chcesz zachować info o źródłowym branchu w wiadomości commita, dodaj `--squash-info` (feature/release/hotfix).
