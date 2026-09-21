@@ -9,7 +9,7 @@ repositories {
 }
 
 group = "gitflow4idea-plus"
-version = "0.8.1-beta.2"
+version = "0.8.1-beta.3"
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
@@ -36,7 +36,7 @@ tasks {
         version.set("${project.version}")
         sinceBuild.set("231.8109.175")
         changeNotes.set("""
-            <H2>Changelog for 0.8.1-beta.2</H2>
+            <H2>Changelog for 0.8.1-beta.3</H2>
             <ul>
               <li>Support git-flow-next implementation #45</li>
               <li>Support gitflow-cjs implementation #34</li>
