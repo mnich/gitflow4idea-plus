@@ -45,6 +45,7 @@ tasks {
               <li>Smart branch detection for init dialog (prioritize main over master)</li>
               <li>Improve init prompt matching for different git-flow implementations</li>
               <li>Improve unsupported version error message with installation guidance</li>
+              <li>Add "Squash during merge" (-S) option for finishing features and bugfixes</li>
             </ul>
 
             <H2>Changelog for 0.7.13</H2>
