@@ -51,6 +51,16 @@ public class GitflowImpl extends GitImpl implements Gitflow {
         }
     }
 
+    //when squashing, git-flow's finish script runs a plain "git commit" with no message
+    //(see git-flow-feature/git-flow-bugfix "git_do commit"), which would otherwise block
+    //forever waiting for an interactive editor since we run git headlessly here
+    private void disableEditorIfSquashing(GitLineHandler h, Project project, String optionId){
+        HashMap<String,String> optionMap = GitflowOptionsFactory.getOptionById(optionId);
+        if (GitflowConfigurable.isOptionActive(project, optionMap.get("id"))){
+            h.addCustomEnvironmentVariable("GIT_EDITOR", "true");
+        }
+    }
+
     public GitCommandResult initRepo(@NotNull GitRepository repository,
                                      GitflowInitOptions initOptions, @Nullable GitLineHandlerListener... listeners) {
         return callInit(repository, initOptions, false, listeners);
@@ -140,6 +150,7 @@ public class GitflowImpl extends GitImpl implements Gitflow {
         addOptionsCommand(h, repository.getProject(),"FEATURE_pushOnFinish");
         addOptionsCommand(h, repository.getProject(),"FEATURE_noFastForward");
         addOptionsCommand(h, repository.getProject(),"FEATURE_squash");
+        disableEditorIfSquashing(h, repository.getProject(),"FEATURE_squash");
 
         h.addParameters(featureName);
 
@@ -427,6 +438,7 @@ public class GitflowImpl extends GitImpl implements Gitflow {
         addOptionsCommand(h, repository.getProject(),"BUGFIX_keepBranch");
         addOptionsCommand(h, repository.getProject(),"BUGFIX_fetchFromOrigin");
         addOptionsCommand(h, repository.getProject(),"BUGFIX_squash");
+        disableEditorIfSquashing(h, repository.getProject(),"BUGFIX_squash");
 
         h.addParameters(bugfixName);
 
