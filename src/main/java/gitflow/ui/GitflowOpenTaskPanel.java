@@ -157,7 +157,7 @@ public class GitflowOpenTaskPanel extends TaskDialogPanel implements ItemListene
                 TaskManagerImpl.addBranches(localTask, next, false);
 
                 //maps branch to task
-                gitflowState.setTaskBranch(currentTask, fullBranchName);
+                gitflowState.setTaskBranch(currentTask.getId(), fullBranchName);
             }
         });
     }

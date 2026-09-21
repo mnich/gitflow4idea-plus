@@ -3,7 +3,6 @@ package gitflow;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
-import com.intellij.tasks.Task;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.Nullable;
 
@@ -49,12 +48,12 @@ public class GitflowState implements PersistentStateComponent<GitflowState> {
 
     }
 
-    public String getTaskBranch(Task task){
-        return taskBranches.get(task.getId());
+    public String getTaskBranch(String taskId){
+        return taskBranches.get(taskId);
     }
 
 
-    public void setTaskBranch(Task task, String branchName){
-        taskBranches.put(task.getId(), branchName);
+    public void setTaskBranch(String taskId, String branchName){
+        taskBranches.put(taskId, branchName);
     }
 }
