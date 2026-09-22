@@ -4,6 +4,7 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -15,8 +16,7 @@ import java.util.HashMap;
 
 @State(
         name = "GitflowState", storages = {
-        @Storage(
-                file = "$APP_CONFIG$/GitflowState.xml")
+        @Storage("GitflowState.xml")
 })
 public class GitflowState implements PersistentStateComponent<GitflowState> {
 
@@ -24,7 +24,7 @@ public class GitflowState implements PersistentStateComponent<GitflowState> {
 
 
     public GitflowState() {
-        taskBranches = new HashMap<String, String>();
+        taskBranches = new HashMap<>();
     }
 
 
@@ -43,7 +43,7 @@ public class GitflowState implements PersistentStateComponent<GitflowState> {
     }
 
     @Override
-    public void loadState(GitflowState state) {
+    public void loadState(@NotNull GitflowState state) {
         XmlSerializerUtil.copyBean(state, this);
 
     }
